@@ -22,7 +22,7 @@
             <a href="#contact">contact</a>
         </nav>
         <div class="navbar">
-            <a href="#login">login</a>
+            <a href="login.php">login</a>
         </div>
         </header>
         

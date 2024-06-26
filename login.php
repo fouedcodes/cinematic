@@ -1,27 +1,36 @@
 <?php
-require("./db_config.php");
-$errorMessage = "";
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $email = trim($_POST['email']);
-  $password = trim($_POST['password']);
 
-  // Insecure query (NOT RECOMMENDED FOR PRODUCTION)
-  // Replace with prepared statements to prevent SQL injection
-  $sql = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
-  $result = $conn->query($sql);
-
-  if ($result->num_rows === 1) {
-    session_start();
-    $_SESSION['registered_user_email'] = $email;
-    // Login successful (redirect to profile page)
-    header("Location: profil.php"); // Replace with intended page
-  } else {
-    $errorMessage = "Invalid email or password!";
+session_start();
+$login = $_SESSION['login'];
+if($login==false){
+  require("./db_config.php");
+  $errorMessage = "";
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email']);
+    $password = trim($_POST['password']);
+  
+    // Insecure query (NOT RECOMMENDED FOR PRODUCTION)
+    // Replace with prepared statements to prevent SQL injection
+    $sql = "SELECT * FROM users WHERE email = '$email' AND password = '$password'";
+    $result = $conn->query($sql);
+  
+    if ($result->num_rows === 1) {
+      session_start();
+      $_SESSION['registered_user_email'] = $email;
+      $_SESSION['login']=true;
+      // Login successful (redirect to profile page)
+      header("Location: profil.php"); // Replace with intended page
+    } else {
+      $errorMessage = "Invalid email or password!";
+    }
   }
+  
+  // Close the database connection
+  $conn->close();
+}else{
+  header('Location: index.php');
 }
 
-// Close the database connection
-$conn->close();
 
 ?>
 
@@ -44,6 +53,7 @@ $conn->close();
     <label for="password">Password:</label>
     <input type="password" name="password" id="password" required><br><br>
     <input type="submit" value="Login">
+    <a href="forgot_password.php">Forgot Password?</a>
   </form>
 
 </body>

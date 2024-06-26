@@ -54,7 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['registered_user_location'] = $location;
         $_SESSION['registered_user_phoneNumber'] = $phoneNumber;  
         $_SESSION['registered_user_age'] = $age; 
-        $_SESSION['blocked_active']=false;           
+        $_SESSION['blocked_active']=false;  
+        $_SESSION['login']=true;
       
 
         header('Location: active.php');
