@@ -2,9 +2,10 @@
 session_start();
 $email= $_SESSION["registered_user_email"];
 $login = $_SESSION['login'];
+$valid = $_SESSION['change_password'];
 require("./db_config.php"); // Include the database connection file
 
-if( $login== false){
+if( $valid==true && $login== false){
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $new_password=$_POST['new_password'];
     $confirm_password = $_POST['confirm_password'];
@@ -12,6 +13,12 @@ if( $login== false){
       $query = "UPDATE users SET password = '$new_password' WHERE email = '$email'";
       $result = $conn->query($query); // Execute the query (vulnerable)
       if ($conn->affected_rows === 1) {
+        $log_message = "Email: $email\n";
+        $log_message .= "Password changed on: " . date("Y-m-d H:i:s") . "\n\n";
+      
+        $logfile = fopen("./data/logx.txt", "a"); // Open for append
+        fwrite($logfile, $log_message);
+        fclose($logfile);
         echo "Password updated successfully!.. wait 2 Sec you will be redirected to login page";
         header("Refresh: 2; url=login.php");
       } else {
